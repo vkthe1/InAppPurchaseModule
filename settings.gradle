@@ -1,2 +1,3 @@
-rootProject.name='InappCheck'
+include ':PurshaseLib'
+rootProject.name='InAppSub'
 include ':app'

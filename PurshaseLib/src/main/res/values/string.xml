@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_no_internet_connection">No internet connection.</string>
+    <string name="txt_no_internet_connection_message">Make sure that Wi-Fi or mobile data is turned on, then try again.</string>
+    <string name="txt_positive_btn">Okay</string>
+</resources>
