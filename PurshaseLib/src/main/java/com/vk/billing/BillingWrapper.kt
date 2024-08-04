@@ -26,6 +26,7 @@ import com.vk.purshaselib.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -311,9 +312,9 @@ class BillingWrapper(
                     if (purchase.products[0] == purchaseProduct) {
                         Log.e("Vk", " Cosumable : $isConsumableProduct")
                         if (isConsumableProduct) {
-                            Handler(Looper.getMainLooper()).postDelayed({
-                                CoroutineScope(Dispatchers.IO).launch { consumeProduct(purchase.products[0]) }
-                            }, 1000)
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    delay(1000)
+                                    consumeProduct(purchase.products[0]) }
                         }
                         inAppListener?.isPurchased(purchase.products[0])
                     }
