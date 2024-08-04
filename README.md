@@ -52,7 +52,7 @@ billingWrapper.getPurchaseList().forEach {
 /* fun callPurchase(activity : Activity,product : String,purchaseListener : ProductInApp,
 isConsumable : Boolean = false)
 
-**isConsumable** is used to auto consume InApp purchase when required
+isConsumable -> It is used to auto consume InApp purchase when required
 */
 
 billingWrapper.callPurchase(context,Constant.INAPP_PRODUCT,  purchaseListener,true)
