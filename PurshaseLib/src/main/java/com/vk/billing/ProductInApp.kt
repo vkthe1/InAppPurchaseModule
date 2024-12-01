@@ -18,5 +18,7 @@ interface ProductInApp {
 
     fun serviceTimeOut()
 
+    fun itemAlreadyOwned()
+
     fun serviceDisconnected()
 }

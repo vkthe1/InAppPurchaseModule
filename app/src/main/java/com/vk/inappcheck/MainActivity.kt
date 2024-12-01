@@ -9,9 +9,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.billingclient.api.Purchase
 import com.google.gson.Gson
-import com.vk.inappcheck.databinding.ActivityMainBinding
 import com.vk.billing.BillingWrapper
 import com.vk.billing.ProductInApp
+import com.vk.inappcheck.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -139,6 +139,10 @@ class MainActivity : AppCompatActivity(), ProductInApp {
 
     override fun serviceTimeOut() {
         Log.e("Vk ", "serviceTimeOut")
+    }
+
+    override fun itemAlreadyOwned() {
+        Log.e("Vk ", "itemAlreadyOwned: ")
     }
 
     override fun serviceDisconnected() {

@@ -6,8 +6,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
@@ -15,6 +13,7 @@ import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeParams
+import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
@@ -45,8 +44,11 @@ class BillingWrapper(
     private var inAppListener: ProductInApp? = null
     private var listProductDetails = ArrayList<ProductDetails>()
     private var purchaseList = ArrayList<Purchase>()
+    private var pendingPurchaseList = ArrayList<Purchase>()
     private val billingClient =
-        BillingClient.newBuilder(context).setListener(this).enablePendingPurchases().build()
+        BillingClient.newBuilder(context).setListener(this).enablePendingPurchases(
+            PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
+        ).build()
     private var isShowCustomNetworkDialog = false
 
     fun setShowCustomNetworkDialog(isShowCustomNetworkDialog: Boolean) {
@@ -65,12 +67,17 @@ class BillingWrapper(
         return purchaseList
     }
 
+    fun getPendingPurchasedList(): ArrayList<Purchase> {
+        return pendingPurchaseList
+    }
+
     fun getProductDetails(): ArrayList<ProductDetails> {
         return listProductDetails
     }
 
     private fun startConnection(onFetchSuccess: (() -> Unit?)? = null) {
         purchaseList.clear()
+        pendingPurchaseList.clear()
         listProductDetails.clear()
         Log.e(TAG, "startConnection")
         billingClient.startConnection(object : BillingClientStateListener {
@@ -100,10 +107,24 @@ class BillingWrapper(
                         }
 
                         getPurchasedList(BillingClient.ProductType.SUBS)?.let {
-                            purchaseList.addAll(it)
+                            it.forEach { purchase ->
+                                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                                    purchaseList.add(purchase)
+                                    handlePurchase(purchase)
+                                } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+                                    pendingPurchaseList.add(purchase)
+                                }
+                            }
                         }
                         getPurchasedList(BillingClient.ProductType.INAPP)?.let {
-                            purchaseList.addAll(it)
+                            it.forEach { purchase ->
+                                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                                    purchaseList.add(purchase)
+                                    handlePurchase(purchase)
+                                } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+                                    pendingPurchaseList.add(purchase)
+                                }
+                            }
                         }
 
                         onFetchSuccess?.let { it() }
@@ -119,6 +140,8 @@ class BillingWrapper(
             }
         })
     }
+
+
 
     fun callPurchase(
         activity: Activity,
@@ -305,16 +328,25 @@ class BillingWrapper(
         when {
             billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null -> {
                 Log.e(TAG, "onPurchasesUpdated : User responseCode Purchase OK")
-                inAppListener?.productList(purchases)
+
                 purchaseList.clear()
-                purchaseList.addAll(purchases)
+                pendingPurchaseList.clear()
+                purchases.forEach { purchase ->
+                    if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED)
+                        purchaseList.add(purchase)
+                    else (purchase.purchaseState == Purchase.PurchaseState.PENDING)
+                        pendingPurchaseList.add(purchase)
+
+                }
+                inAppListener?.productList(purchaseList)
                 for (purchase in purchases) {
                     if (purchase.products[0] == purchaseProduct) {
                         Log.e("Vk", " Cosumable : $isConsumableProduct")
                         if (isConsumableProduct) {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    delay(1000)
-                                    consumeProduct(purchase.products[0]) }
+                            CoroutineScope(Dispatchers.IO).launch {
+                                delay(1000)
+                                consumeProduct(purchase.products[0])
+                            }
                         }
                         inAppListener?.isPurchased(purchase.products[0])
                     }
@@ -322,6 +354,14 @@ class BillingWrapper(
                         handlePurchase(purchase)
                     }
                 }
+            }
+
+
+            billingResult.responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
+                // Handle an error caused by a user cancelling the purchase flow.
+                Log.e(TAG, "onPurchasesUpdated : User Purchase Already Owned")
+                inAppListener?.itemAlreadyOwned()
+
             }
 
             billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED -> {
@@ -347,6 +387,12 @@ class BillingWrapper(
                 // Handle error
                 Log.e(TAG, "onPurchasesUpdated : SERVICE_UNAVAILABLE")
                 inAppListener?.serviceTimeOut()
+            }
+
+            billingResult.responseCode == BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> {
+                // Handle error
+                Log.e(TAG, "onPurchasesUpdated : BILLING_UNAVAILABLE")
+                inAppListener?.onPurchaseError()
             }
 
             billingResult.responseCode == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED -> {
