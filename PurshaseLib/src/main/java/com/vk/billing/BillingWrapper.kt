@@ -180,14 +180,6 @@ class BillingWrapper(
                 }
             } else {
                 inAppListener.onNetworkError()
-                if (!isShowCustomNetworkDialog) {
-                    AlertDialog.Builder(activity)
-                        .setTitle(activity.getString(R.string.txt_no_internet_connection))
-                        .setMessage(activity.getString(R.string.txt_no_internet_connection_message))
-                        .setPositiveButton(activity.getString(R.string.txt_positive_btn)) { dialog, which ->
-                            dialog.dismiss()
-                        }.show()
-                }
             }
         }
     }
