@@ -1,14 +1,14 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+
 android {
-    compileSdk { it.version = release(36) }
+    compileSdk { it.version = release(37) }
     namespace 'com.vk.inappcheck'
     defaultConfig {
         applicationId "com.vk.inappdemo"
         minSdk { it.version = release(24) }
-        targetSdk { it.version = release(36) }
+        targetSdk { it.version = release(37) }
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -37,10 +37,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    def multidex_version = "2.0.1"
-    implementation "androidx.multidex:multidex:$multidex_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'com.android.billingclient:billing-ktx:8.3.0'
+    implementation 'com.android.billingclient:billing-ktx:9.0.0'
     implementation project(path: ':PurshaseLib')
 }

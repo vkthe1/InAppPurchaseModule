@@ -45,7 +45,7 @@ class BillingWrapper(
     private val billingClient =
         BillingClient.newBuilder(context).setListener(this).enablePendingPurchases(
             PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
-        ).build()
+        ).enableAutoServiceReconnection().build()
     private var isShowCustomNetworkDialog = false
 
     fun setShowCustomNetworkDialog(isShowCustomNetworkDialog: Boolean) {
@@ -343,58 +343,69 @@ class BillingWrapper(
                     }
                 }
             }
+
             BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
                 // Handle an error caused by a user cancelling the purchase flow.
                 Log.e(TAG, "onPurchasesUpdated : User Purchase Already Owned")
                 inAppListener?.itemAlreadyOwned()
 
             }
+
             BillingClient.BillingResponseCode.USER_CANCELED -> {
                 // Handle an error caused by a user cancelling the purchase flow.
                 Log.e(TAG, "onPurchasesUpdated : User Canceled Purchase")
                 inAppListener?.cancelByUser()
 
             }
+
             BillingClient.BillingResponseCode.ERROR -> {
                 // Handle error
                 Log.e(TAG, "onPurchasesUpdated : Error")
                 inAppListener?.onPurchaseError()
             }
+
             BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED -> {
                 // Handle error
                 Log.e(TAG, "onPurchasesUpdated : FEATURE_NOT_SUPPORTED")
                 inAppListener?.featureNotSupported()
             }
+
             BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE -> {
                 // Handle error
                 Log.e(TAG, "onPurchasesUpdated : SERVICE_UNAVAILABLE")
                 inAppListener?.serviceTimeOut()
             }
+
             BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> {
                 // Handle error
                 Log.e(TAG, "onPurchasesUpdated : BILLING_UNAVAILABLE")
                 inAppListener?.onPurchaseError()
             }
+
             BillingClient.BillingResponseCode.DEVELOPER_ERROR -> {
                 // Handle error
                 Log.e(TAG, "onPurchasesUpdated : DEVELOPER_ERROR")
                 inAppListener?.onPurchaseError()
             }
+
             BillingClient.BillingResponseCode.ITEM_UNAVAILABLE -> {
                 // Handle error
                 Log.e(TAG, "onPurchasesUpdated : ITEM_UNAVAILABLE")
                 inAppListener?.itemNotAvailable()
             }
+
             BillingClient.BillingResponseCode.ITEM_NOT_OWNED -> {
                 // Handle error
                 Log.e(TAG, "onPurchasesUpdated : ITEM_NOT_OWNED")
                 inAppListener?.itemNotOwned()
             }
+
             BillingClient.BillingResponseCode.SERVICE_DISCONNECTED -> {
                 // Handle error
                 Log.e(TAG, "onPurchasesUpdated : SERVICE_DISCONNECTED")
                 inAppListener?.serviceDisconnected()
             }
+
             BillingClient.BillingResponseCode.NETWORK_ERROR -> {
                 // Handle error
                 Log.e(TAG, "onPurchasesUpdated : NETWORK_ERROR")

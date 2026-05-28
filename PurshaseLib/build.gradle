@@ -2,16 +2,15 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id 'com.android.library'
-    id 'kotlin-android'
 }
 
 android {
-    compileSdk { it.version = release(36) }
+    compileSdk { it.version = release(37) }
 
     namespace 'com.vk.purshaselib'
     defaultConfig {
         minSdk { it.version = release(24) }
-        targetSdk { it.version = release(36) }
+        targetSdk { it.version = release(37) }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -40,10 +39,10 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    api 'androidx.core:core-ktx:1.17.0'
-    api 'com.google.code.gson:gson:2.13.2'
+    api 'androidx.core:core-ktx:1.18.0'
+    api 'com.google.code.gson:gson:2.14.0'
     api 'androidx.appcompat:appcompat:1.7.1'
-    api 'com.google.android.material:material:1.13.0'
-    api 'com.android.billingclient:billing-ktx:8.3.0'
-    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2'
+    api 'com.google.android.material:material:1.14.0'
+    api 'com.android.billingclient:billing-ktx:9.0.0'
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0'
 }
