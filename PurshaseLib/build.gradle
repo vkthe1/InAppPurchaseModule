@@ -1,14 +1,16 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id 'com.android.library'
-    id 'kotlin-android'
 }
 
 android {
-    compileSdk 35
+    compileSdk { it.version = release(37) }
+
     namespace 'com.vk.purshaselib'
     defaultConfig {
-        minSdk 21
-        targetSdk 34
+        minSdk { it.version = release(24) }
+        targetSdk { it.version = release(37) }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -25,20 +27,22 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = '1.8'
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_11
+        }
     }
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    api 'androidx.core:core-ktx:1.13.1'
-    api 'com.google.code.gson:gson:2.10.1'
-    api 'androidx.appcompat:appcompat:1.7.0'
-    api 'com.google.android.material:material:1.12.0'
-    api 'com.android.billingclient:billing-ktx:7.1.1'
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    api 'androidx.core:core-ktx:1.18.0'
+    api 'com.google.code.gson:gson:2.14.0'
+    api 'androidx.appcompat:appcompat:1.7.1'
+    api 'com.google.android.material:material:1.14.0'
+    api 'com.android.billingclient:billing-ktx:9.0.0'
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0'
 }

@@ -1,5 +1,6 @@
 package com.vk.inappcheck
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
@@ -107,6 +108,7 @@ class MainActivity : AppCompatActivity(), ProductInApp {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun isPurchased(product: String) {
 
 //        if (Product == Constant.CREDIT10) {
@@ -143,6 +145,14 @@ class MainActivity : AppCompatActivity(), ProductInApp {
 
     override fun itemAlreadyOwned() {
         Log.e("Vk ", "itemAlreadyOwned: ")
+    }
+
+    override fun itemNotOwned() {
+        Log.e("PSB ", "itemNotOwned")
+    }
+
+    override fun itemNotAvailable() {
+        Log.e("PSB ", "itemNotAvailable")
     }
 
     override fun serviceDisconnected() {

@@ -20,5 +20,9 @@ interface ProductInApp {
 
     fun itemAlreadyOwned()
 
+    fun itemNotOwned()
+
+    fun itemNotAvailable()
+
     fun serviceDisconnected()
 }
